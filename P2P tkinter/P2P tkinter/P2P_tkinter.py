@@ -17,13 +17,11 @@ kk=0
 def notification(event):  
     global LogIp
     LogIp = IPaddr + "@#" + str(login.get())
-    print(LogIp)
     users.append(LogIp)
     chat = open("chat" + str(login.get()) + ".txt", "a")
     chat.close()                           #BROADCAST ?????????? ???? ? ????? ????????????
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
-    #sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    i=0
+    i=1
     while i<256:
         addr='192.168.0.'+str(i)
         sock.sendto(LogIp.encode(), (addr, UDP_PORT))
@@ -70,7 +68,6 @@ def Sending(event):
        i = 0
        while i < len(users):
            IP = users[i].split("@#")
-           print(kk, IP)
            if users_list.get(kk) == IP[1]:
                events.clear()    #event=False останавливает Receiving
                a = (str(login.get()) + "|" + message).encode()
@@ -127,12 +124,12 @@ c.start()
 root = Tk()
 root.geometry("300x280")
 login=StringVar()
+
 ent = Entry(root,textvariable = login ,width=10,bd=3)
-#ent.pack()
 ent.place(y=25)
+
 btn= Button(root, text="connect")
 btn.bind("<Button-1>", notification)
-#btn.pack()
 btn.place(x=0,y=0)
 
 sent_btn=Button(root, text="sent")
@@ -140,7 +137,6 @@ sent_btn.bind("<Button-1>",Sending)
 
 MES=StringVar()
 ent_mes = Entry(root,textvariable = MES ,width=20,bd=3)
-#ent.pack()
 
 back_btn=Button(root, text="back")
 back_btn.bind("<Button-1>",Back)
@@ -148,7 +144,7 @@ back_btn.bind("<Button-1>",Back)
 users_list=Listbox()
 for language in users:
     users_list.insert(END, language)
-#users_list.pack()
+
 chat_btn=Button(root, text="open chat")
 chat_btn.bind("<Button-1>",open_chat_btn)
 
