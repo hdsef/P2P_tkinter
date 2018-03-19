@@ -11,7 +11,7 @@ open_ch = ""
 events = threading.Event() #???? ??? ?????????? ?????? ?????????
 events.set() #event = True
 cl_ch = 0 #close chat
-kk=0
+number=0
 #def setting(event):
 
 def notification(event):  
@@ -19,7 +19,7 @@ def notification(event):
     LogIp = IPaddr + "@#" + str(login.get())
     users.append(LogIp)
     chat = open("chat" + str(login.get()) + ".txt", "a")
-    chat.close()                           #BROADCAST ?????????? ???? ? ????? ????????????
+    chat.close()                           
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
     i=1
     while i<256:
@@ -60,22 +60,18 @@ def Receiving():                                #Получение UDP паке
 
 def Sending(event):
     message = str(ent_mes.get())
-    if message == "back to menu":
-        global cl_ch
-        cl_ch = 1
-    else:
-       sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
-       i = 0
-       while i < len(users):
-           IP = users[i].split("@#")
-           if users_list.get(kk) == IP[1]:
-               events.clear()    #event=False останавливает Receiving
-               a = (str(login.get()) + "|" + message).encode()
-               sock.sendto(a, (IP[0], UDP_PORT))
-               with open("chat" + IP[1] + ".txt", "a") as chat:
-                   chat.write("\n" + a.decode())
-               events.set()    #event=True позволяет Receiving продолжить работу
-           i += 1
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+    i = 0
+    while i < len(users):
+        IP = users[i].split("@#")
+        if users_list.get(number) == IP[1]:
+            events.clear()    #event=False останавливает Receiving
+            a = (str(login.get()) + "|" + message).encode()
+            sock.sendto(a, (IP[0], UDP_PORT))
+            with open("chat" + IP[1] + ".txt", "a") as chat:
+                chat.write("\n" + a.decode())
+            events.set()    #event=True позволяет Receiving продолжить работу
+        i += 1
 
 
 def updating_ch(num):
@@ -92,17 +88,16 @@ def updating_ch(num):
 def open_chat_btn(event):
     global cl_ch
     cl_ch = 0
+    global number
     selection = users_list.curselection()
     number=selection[0]
-    global kk
-    kk=selection[0]
-    print(kk)
     tx.place(x=68,height=250) 
     k = threading.Thread(target=updating_ch, args=(number,))
     k.start()
     sent_btn.place(x=265,y=250)
     ent_mes.place(y=255,x=135)
     back_btn.place(y=255, x=70)
+
 
 def Back(event):
     global cl_ch
@@ -142,8 +137,6 @@ back_btn=Button(root, text="back")
 back_btn.bind("<Button-1>",Back)
 
 users_list=Listbox()
-for language in users:
-    users_list.insert(END, language)
 
 chat_btn=Button(root, text="open chat")
 chat_btn.bind("<Button-1>",open_chat_btn)
@@ -152,6 +145,4 @@ tx = Text(font=('times',12),width=28,height=10,wrap=WORD)
 tx.pack(side=RIGHT) 
 tx.pack_forget()
 
-selection = users_list.curselection()
-print(selection)
 root.mainloop()
