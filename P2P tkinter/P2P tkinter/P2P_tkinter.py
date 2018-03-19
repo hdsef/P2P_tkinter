@@ -13,6 +13,8 @@ events.set() #event = True
 cl_ch = 0 #close chat
 number=0
 #def setting(event):
+def nothing():
+    return(0)
 
 def notification(event):  
     global LogIp
@@ -26,9 +28,9 @@ def notification(event):
         addr='192.168.0.'+str(i)
         sock.sendto(LogIp.encode(), (addr, UDP_PORT))
         i=i+1
-        
     btn.place_forget()
     ent.place_forget()
+    label2.place_forget()
     users_list.place(y=27,width=68,relheight=1.0)
     chat_btn.place(x=0)
 
@@ -86,17 +88,20 @@ def updating_ch(num):
  
 
 def open_chat_btn(event):
-    global cl_ch
-    cl_ch = 0
-    global number
-    selection = users_list.curselection()
-    number=selection[0]
-    tx.place(x=68,height=250) 
-    k = threading.Thread(target=updating_ch, args=(number,))
-    k.start()
-    sent_btn.place(x=265,y=250)
-    ent_mes.place(y=255,x=135)
-    back_btn.place(y=255, x=70)
+    try:
+        global cl_ch
+        cl_ch = 0
+        global number
+        selection = users_list.curselection()
+        number=selection[0]
+        tx.place(x=68,height=250) 
+        k = threading.Thread(target=updating_ch, args=(number,))
+        k.start()
+        sent_btn.place(x=265,y=250)
+        ent_mes.place(y=255,x=135)
+        back_btn.place(y=255, x=70)
+    except:
+        nothing()
 
 
 def Back(event):
@@ -121,11 +126,14 @@ root.geometry("300x280")
 login=StringVar()
 
 ent = Entry(root,textvariable = login ,width=10,bd=3)
-ent.place(y=25)
+ent.place(relx=.5,rely=0.5)
 
 btn= Button(root, text="connect")
 btn.bind("<Button-1>", notification)
-btn.place(x=0,y=0)
+btn.place(relx=.5, rely=.6)
+
+label2 = Label(text="Введите логин", justify=LEFT)
+label2.place(relx=.5, rely=.4)
 
 sent_btn=Button(root, text="sent")
 sent_btn.bind("<Button-1>",Sending)
