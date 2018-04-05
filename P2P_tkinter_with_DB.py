@@ -6,7 +6,7 @@ from tkinter import *
 import mysql.connector
 from mysql.connector import MySQLConnection, Error
 
-conn = mysql.connector.connect(host='localhost',
+conn = mysql.connector.connect(host='192.168.0.104',
                                        database='test',
                                        user='root',
                                        password='2794')
